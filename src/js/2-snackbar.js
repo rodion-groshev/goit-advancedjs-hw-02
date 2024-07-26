@@ -10,39 +10,47 @@ const formChanges = event => {
   param[eventName] = eventValue;
 };
 
-const makePromise = event => {
+const submitListener = event => {
   event.preventDefault();
-  return new Promise((resolve, reject) => {
-    const state = param.state;
-    const delay = param.delay;
-    setTimeout(() => {
-      if (state === 'fulfilled') {
-        resolve(
-          iziToast.show({
-            color: 'green',
-            message: `✅ Fulfilled promise in ${delay}ms`,
-            position: 'topCenter',
-            messageColor: 'white',
-            progressBar: false,
-            icon: 'material-icons',
-          })
-        );
-      } else {
-        reject(
-          iziToast.show({
-            color: 'red',
-            message: `❌ Rejected promise in ${delay}ms`,
-            position: 'topCenter',
-            messageColor: 'white',
-            progressBar: false,
-            icon: 'material-icons',
-          })
-        );
-      }
-    }, delay);
-    event.target.reset();
-  });
+  const state = param.state;
+  const delay = param.delay;
+
+  createPromise(state, delay)
+    .then(delay => {
+      iziToast.show({
+        color: 'green',
+        message: `✅ Fulfilled promise in ${delay}ms`,
+        position: 'topCenter',
+        messageColor: 'white',
+        progressBar: false,
+        icon: 'material-icons',
+      });
+    })
+    .catch(delay => {
+      iziToast.show({
+        color: 'red',
+        message: `❌ Rejected promise in ${delay}ms`,
+        position: 'topCenter',
+        messageColor: 'white',
+        progressBar: false,
+        icon: 'material-icons',
+      });
+    });
+
+  event.target.reset();
 };
 
+function createPromise(state, delay) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (state === 'fulfilled') {
+        resolve(delay);
+      } else {
+        reject(delay);
+      }
+    }, delay);
+  });
+}
+
 form.addEventListener('input', formChanges);
-form.addEventListener('submit', makePromise);
+form.addEventListener('submit', submitListener);

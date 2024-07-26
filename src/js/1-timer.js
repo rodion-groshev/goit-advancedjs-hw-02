@@ -39,6 +39,7 @@ btn.addEventListener('click', setTimer);
 
 function setTimer() {
   btn.setAttribute('disabled', 'disabled');
+  pickrEl.setAttribute('disabled', 'disabled');
   const timer = setInterval(() => {
     let userSelectedDate = new Date(pickrEl.value);
     let difference = userSelectedDate - Date.now();
@@ -51,6 +52,7 @@ function setTimer() {
 
     if (difference < 1000) {
       clearInterval(timer);
+      pickrEl.removeAttribute('disabled');
     }
   }, 1000);
 }
